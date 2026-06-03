@@ -1,383 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>REBO Weekly meeting</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REBO Meetings</title>
 
-<style>
-:root{
-  --eon-red:#e6001a;
-  --eon-purple:#7a1f8a;
-  --gradient: linear-gradient(135deg, var(--eon-red), var(--eon-purple));
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
-  --bg:#f6f5f8;
-  --card:#ffffff;
-  --text:#2b2b2b;
-  --shadow:0 10px 22px rgba(0,0,0,0.08);
-  --radius:20px;
-}
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
 
+    .button-group button {
+      margin-right: 8px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #f0f0f0;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-*{box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif;}
-body{margin:0;padding:28px;background:var(--bg);color:var(--text);}
+    .button-group button.active {
+      background: #0078d4;
+      color: white;
+    }
 
-h1{ text-align:center; font-size:38px; margin:0 0 18px 0; }
-
-/* TOP: timer + role box */
-.topbar{
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-bottom:26px;
-}
-
-.timer-column{ text-align:center; }
-
-.timer{
-  font-size:28px;
-  font-weight:700;
-  padding:10px 22px;
-  border-radius:14px;
-  background:var(--gradient);
-  color:#fff;
-  display:inline-block;
-  box-shadow:var(--shadow);
-  min-width:120px;
-}
-
-.timer-buttons{ margin-top:10px; }
-.timer-buttons button{
-  margin:0 6px;
-  padding:6px 14px;
-  font-size:14px;
-  border-radius:999px;
-  border:none;
-  background:#fff;
-  cursor:pointer;
-  box-shadow:var(--shadow);
-}
-
-.rolebox{
-  min-width:210px;
-  background:#fff;
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  border:1px solid rgba(0,0,0,0.04);
-  padding:10px 12px;
-  position:relative;
-}
-.rolebox::before{
-  content:"";
-  position:absolute;
-  inset:-2px;
-  border-radius:18px;
-  background:var(--gradient);
-  z-index:-1;
-}
-.roleline{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:4px 2px;
-  font-size:14px;
-}
-.rolelabel{ font-weight:700; color:var(--eon-purple); }
-.rolename{ font-weight:700; color:var(--text); }
-
-/* LAYOUT */
-.container{
-  display:grid;
-  grid-template-columns:1.4fr 1fr;
-  gap:22px;
-}
-
-/* CARDS */
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:20px 22px;
-  box-shadow:var(--shadow);
-}
-
-/* CLOCK */
-.clock{
-  font-size:34px;
-  font-weight:750;
-  padding:10px 18px;
-  border-radius:16px;
-  background:var(--gradient);
-  color:#fff;
-  display:inline-block;
-  margin-bottom:14px;
-}
-
-/* TABLE */
-table{ width:100%; border-collapse:collapse; }
-th{ text-align:left; padding-bottom:10px; font-size:15px; }
-td{ padding:8px 6px; vertical-align:top; }
-tr:not(:last-child) td{ border-bottom:1px solid #eee; }
-
-/* Agenda details */
-.agenda-details{ margin-top:8px; font-size:14px; line-height:1.5; }
-.agenda-details span{ display:block; margin-top:4px; }
-.bold{ font-weight:800; color:var(--eon-red); }
-
-/* Info tooltip */
-.info{
-  position:relative;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:20px;
-  height:20px;
-  border-radius:999px;
-  margin-left:8px;
-  background:var(--gradient);
-  color:#fff;
-  font-size:13px;
-  font-weight:800;
-  cursor:default;
-  vertical-align:middle;
-}
-.info img{
-  position:absolute;
-  top:26px;
-  left:0;
-  width:624px;
-  max-width:min(80vw, 624px);
-  border-radius:12px;
-  box-shadow:var(--shadow);
-  display:none;
-  z-index:50;
-  background:#fff;
-}
-.info:hover img{ display:block; }
-
-/* HEADLINES + guidelines */
-h2{ margin:12px 0; font-size:20px; color:var(--eon-purple); }
-ul{ padding-left:18px; margin:8px 0 0 0; }
-li{ margin-bottom:10px; line-height:1.45; }
-
-@media (max-width: 900px){
-  body{ padding:18px; }
-  .container{ grid-template-columns:1fr; }
-  .rolebox{ width:min(420px, 92vw); }
-}
-</style>
+    iframe {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 60px);
+      border: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>REBO Weekly meeting</h1>
-
-<div class="topbar">
-  <div class="timer-column">
-    <div class="timer" id="timer">05:00</div>
-    <div class="timer-buttons">
-      <button type="button" onclick="startTimer(5)">5 min</button>
-      <button type="button" onclick="startTimer(15)">15 min</button>
+  <div class="top-bar">
+    <div class="button-group">
+      <button id="weeklyBtn" class="active" onclick="showPage('weekly')">Weekly</button>
+      <button id="monthlyBtn" onclick="showPage('monthly')">Monthly</button>
     </div>
   </div>
 
-  <div class="rolebox" aria-label="Roles">
-    <div class="roleline">
-      <div class="rolelabel">Moderator:</div>
-      <div class="rolename" id="roleModerator">–</div>
-    </div>
-    <div class="roleline">
-      <div class="rolelabel">Timekeeper:</div>
-      <div class="rolename" id="roleTimekeeper">–</div>
-    </div>
-  </div>
-</div>
+  <iframe id="contentFrame" src="https://paexvibes.github.io/REBO-weekly/"></iframe>
 
-<div class="container">
+  <script>
+    function showPage(type) {
+      const frame = document.getElementById("contentFrame");
+      const weeklyBtn = document.getElementById("weeklyBtn");
+      const monthlyBtn = document.getElementById("monthlyBtn");
 
-  <!-- LEFT: CLOCK + AGENDA -->
-  <div class="card">
-    <div class="clock" id="clock">--:--</div>
-
-    <h2>Agenda</h2>
-
-    <table>
-      <tr>
-        <th style="width:52px;">#</th>
-        <th style="width:86px;">Time</th>
-        <th style="width:150px;">Person</th>
-        <th>Agenda</th>
-      </tr>
-
-      <tr>
-        <td>1</td>
-        <td>8.15</td>
-        <td>Moderator</td>
-        <td>
-          Team success
-          <span class="info" title="Team Success info">i
-            <!-- Byt src till rätt filnamn eller URL där bilden ligger -->
-            <img src="team-success.png" alt="Team Success" />
-          </span>
-
-          <div class="agenda-details" id="mondays">
-            <span>1st Monday: Gratitude circle</span>
-            <span>2nd Monday: Acknowledge others</span>
-            <span>3rd Monday: Be proud in a short sentence</span>
-            <span>4th Monday: What have you learned lately in a short sentence</span>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td>2</td>
-        <td>8.20</td>
-        <td>Manager</td>
-        <td>Management update</td>
-      </tr>
-
-      <tr>
-        <td>3</td>
-        <td>8.25</td>
-        <td>All</td>
-        <td>Update, highlights, problem, help</td>
-      </tr>
-
-      <tr>
-        <td>4</td>
-        <td>8.40</td>
-        <td>Moderator</td>
-        <td>Allocating recruitments + SF left</td>
-      </tr>
-
-      <tr>
-        <td>5</td>
-        <td>8.45</td>
-        <td>Timekeeper</td>
-        <td>Actions forward</td>
-      </tr>
-
-      <tr>
-        <td>6</td>
-        <td>8.50</td>
-        <td>All</td>
-        <td>Feedback meeting</td>
-      </tr>
-    </table>
-  </div>
-
-  <!-- RIGHT: GUIDELINES -->
-  <div class="card">
-    <h2>REBO Guidelines</h2>
-    <ul>
-      <li>We start and end in time</li>
-      <li>We come prepared to the meeting</li>
-      <li>There will always be a moderator and timekeeper</li>
-      <li>If you are not present, hand over the information to someone else</li>
-      <li>We act with good intentions</li>
-      <li>We listen to each other</li>
-      <li>We help each other and offer support</li>
-      <li>We dare to tell our thoughts</li>
-      <li>We give constructive feedback</li>
-      <li>We give sensitive feedback in JF</li>
-      <div class="actions-box">
-        <a 
-          href="https://teams.microsoft.com/l/entity/com.microsoft.teamspace.tab.planner/_djb2_msteams_prefix_1812266697?context=%7B%22channelId%22%3A%2219%3A9fbb919437a84059bff6395c20a981bb%40thread.skype%22%7D&tenantId=b914a242-e718-443b-a47c-6b4c649d8c0a"
-          target="_blank"
-          rel="noopener"
-        >
-         
-        
-        
-        ✅ Actions – REBO Planner
-          
-        </a>
-        
-      </div>
-    </ul>
-  </div>
-
-</div>
-
-<span class="info">i
-  <img src="team-success.png" alt="Team Success info">
-</span>
-
-<script>
-/* Stockholm clock */
-function updateClock(){
-  const now = new Date().toLocaleTimeString("sv-SE", {
-    timeZone: "Europe/Stockholm",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-  document.getElementById("clock").innerText = now;
-}
-updateClock();
-setInterval(updateClock, 1000);
-
-/* Countdown timer */
-let timerInterval;
-function startTimer(minutes){
-  clearInterval(timerInterval);
-  let seconds = minutes * 60;
-
-  function render(){
-    const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-    const sec = String(seconds % 60).padStart(2, "0");
-    document.getElementById("timer").innerText = `${min}:${sec}`;
-  }
-
-  render();
-  timerInterval = setInterval(() => {
-    seconds -= 1;
-    if (seconds < 0){
-      clearInterval(timerInterval);
-      return;
+      if (type === "weekly") {
+        frame.src = "https://paexvibes.github.io/REBO-weekly/";
+        weeklyBtn.classList.add("active");
+        monthlyBtn.classList.remove("active");
+      } else {
+        frame.src = "https://paexvibes.github.io/REBO-monthly/";
+        monthlyBtn.classList.add("active");
+        weeklyBtn.classList.remove("active");
+      }
     }
-    render();
-  }, 1000);
-}
-
-/* ISO week number */
-function getISOWeek(date){
-  const d = new Date(date);
-  d.setHours(0,0,0,0);
-  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
-  const week1 = new Date(d.getFullYear(), 0, 4);
-  return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-}
-
-const week = getISOWeek(new Date());
-
-/* Bold correct Monday:
-   v16 => 3rd Monday
-   v17 => 4th Monday
-   v18 => 1st Monday
-*/
-const mondayIndex = ((week - 14) % 4 + 4) % 4;
-const mondayLines = document.querySelectorAll("#mondays span");
-if (mondayLines[mondayIndex]) mondayLines[mondayIndex].classList.add("bold");
-
-/* Roles rotation:
-   Team order: Josefin, Ellinor, Jonathan, Fredrik, Gustaf, Marvin, Sigrun, Linda, Julia
-   Start point: v17 Moderator=Marvin, Timekeeper=Sigrun
-   Timekeeper this week becomes Moderator next week
-*/
-const team = ["Josefin","Ellinor","Jonathan","Fredrik","Gustaf","Marvin","Sigrun","Linda","Julia"];
-const baseWeek = 17;
-const baseModerator = "Marvin";
-
-const baseModIndex = team.indexOf(baseModerator);
-const offset = week - baseWeek;
-
-const modIndex = ((baseModIndex + offset) % team.length + team.length) % team.length;
-const tkIndex = (modIndex + 1) % team.length;
-
-document.getElementById("roleModerator").innerText = team[modIndex];
-document.getElementById("roleTimekeeper").innerText = team[tkIndex];
-</script>
+  </script>
 
 </body>
 </html>
